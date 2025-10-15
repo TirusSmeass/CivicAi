@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reward System - CivicAI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563EB;
+            --primary-light: #3B82F6;
+            --primary-dark: #1D4ED8;
+            --secondary: #64748B;
+            --light: #F8FAFC;
+            --dark: #1E293B;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gold: #F59E0B;
+            --silver: #94A3B8;
+            --bronze: #B45309;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            background-color: #F1F5F9;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: var(--dark);
+            margin: 0 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .feature-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .feature-header-content {
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-title {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 2.2rem;
+        }
+        
+        .feature-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .reward-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            margin-bottom: 3rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .user-profile {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .user-points {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+        
+        .user-level {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background-color: var(--light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+        
+        .leaderboard-section {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+            font-size: 1.5rem;
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+        
+        .leaderboard-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .leaderboard-rank {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .rank-1 {
+            background-color: var(--gold);
+            color: white;
+        }
+        
+        .rank-2 {
+            background-color: var(--silver);
+            color: white;
+        }
+        
+        .rank-3 {
+            background-color: var(--bronze);
+            color: white;
+        }
+        
+        .rank-other {
+            background-color: var(--light);
+            color: var(--secondary);
+        }
+        
+        .leaderboard-info {
+            flex: 1;
+        }
+        
+        .leaderboard-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .leaderboard-points {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .reward-card {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #E2E8F0;
+        }
+        
+        .reward-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .reward-image {
+            height: 160px;
+            background-color: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary);
+        }
+        
+        .reward-content {
+            padding: 1.5rem;
+        }
+        
+        .reward-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .reward-description {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .reward-points {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .points-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .reward-type {
+            background-color: var(--light);
+            color: var(--secondary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .btn-redeem {
+            width: 100%;
+            background-color: var(--success);
+            border-color: var(--success);
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-redeem:hover {
+            background-color: #0DA271;
+            border-color: #0DA271;
+            transform: translateY(-2px);
+        }
+        
+        .btn-redeem:disabled {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .point-history {
+            margin-top: 3rem;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .history-info {
+            flex: 1;
+        }
+        
+        .history-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .history-date {
+            color: var(--secondary);
+            font-size: 0.85rem;
+        }
+        
+        .history-points {
+            font-weight: 700;
+            color: var(--success);
+        }
+        
+        .history-points.negative {
+            color: var(--danger);
+        }
+        
+        .level-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+        
+        .level-beginner {
+            background-color: #DCFCE7;
+            color: #166534;
+        }
+        
+        .level-contributor {
+            background-color: #DBEAFE;
+            color: #1E40AF;
+        }
+        
+        .level-champion {
+            background-color: #FEF3C7;
+            color: #92400E;
+        }
+        
+        .level-legend {
+            background-color: #FCE7F3;
+            color: #9D174D;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--secondary);
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            color: #CBD5E1;
+            margin-bottom: 1.5rem;
+        }
+        
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--light);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .achievement-icon {
+            color: var(--gold);
+            margin-right: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .feature-header {
+                padding: 2rem 0;
+            }
+            
+            .feature-title {
+                font-size: 1.8rem;
+            }
+            
+            .reward-container {
+                padding: 1.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .rewards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-points {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-brain me-2"></i>CivicAI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#home">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Fitur</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#aspirasi">Aspirasi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="reward.html">Reward</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#leaderboard">Leaderboard</a>
+                    </li>
+                </ul>
+                <a href="index.html#aspirasi" class="btn btn-primary ms-3">Sampaikan Aspirasi</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Feature Header -->
+    <div class="feature-header">
+        <div class="container">
+            <div class="feature-header-content">
+                <div class="feature-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h1 class="feature-title">Sistem Reward CivicAI</h1>
+                <p class="feature-subtitle">Dapatkan poin untuk setiap aspirasi positif yang Anda sampaikan. Tukarkan poin dengan hadiah menarik dan naikkan level kontribusi Anda!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="reward-container">
+            <!-- User Profile & Points -->
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3 id="userName">Pengguna CivicAI</h3>
+                <div class="user-points" id="userPoints">0</div>
+                <div class="user-level" id="userLevel">Pemula</div>
+            </div>
+
+            <!-- User Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalAspirations">0</div>
+                    <div class="stat-label">Total Aspirasi</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="approvedAspirations">0</div>
+                    <div class="stat-label">Aspirasi Disetujui</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="currentLevel">1</div>
+                    <div class="stat-label">Level Saat Ini</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pointsToNext">100</div>
+                    <div class="stat-label">Poin ke Level Berikutnya</div>
+                </div>
+            </div>
+
+            <!-- Achievements -->
+            <div class="mb-4">
+                <h3 class="section-title">Pencapaian Saya</h3>
+                <div id="achievementsList">
+                    <!-- Achievements will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Leaderboard -->
+            <div class="leaderboard-section">
+                <h3 class="section-title">Leaderboard Top Contributor</h3>
+                <div id="leaderboardList">
+                    <!-- Leaderboard will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Rewards Catalog -->
+            <div class="rewards-section">
+                <h3 class="section-title">Tukar Poin dengan Hadiah</h3>
+                <div class="rewards-grid" id="rewardsGrid">
+                    <!-- Rewards will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Point History -->
+            <div class="point-history">
+                <h3 class="section-title">Riwayat Poin</h3>
+                <div id="pointHistory">
+                    <!-- Point history will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4 class="mb-3"><i class="fas fa-brain me-2"></i>CivicAI</h4>
+                    <p>Platform aspirasi publik berbasis kecerdasan buatan untuk membangun demokrasi digital yang etis, transparan, dan inklusif di Indonesia.</p>
+                    <div class="mt-4">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <div class="footer-links">
+                        <h5>Navigasi</h5>
+                        <ul>
+                            <li><a href="index.html#home">Beranda</a></li>
+                            <li><a href="index.html#features">Fitur</a></li>
+                            <li><a href="index.html#dashboard">Dashboard</a></li>
+                            <li><a href="index.html#aspirasi">Aspirasi</a></li>
+                            <li><a href="reward.html">Reward</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="footer-links">
+                        <h5>Kebijakan</h5>
+                        <ul>
+                            <li><a href="#">Kebijakan Privasi</a></li>
+                            <li><a href="#">Syarat dan Ketentuan</a></li>
+                            <li><a href="#">Etika Penggunaan</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <div class="footer-links">
+                        <h5>Kontak</h5>
+                        <ul>
+                            <li><i class="fas fa-map-marker-alt me-2"></i> Surabaya, Indonesia</li>
+                            <li><i class="fas fa-envelope me-2"></i> info@civicai.id</li>
+                            <li><i class="fas fa-phone me-2"></i> +62 21 1234 5678</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Anarus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Reward System Data
+        const rewardSystem = {
+            // User data
+            currentUser: {
+                id: 1,
+                name: "Ahmad Fauzi",
+                points: 450,
+                level: 2,
+                totalAspirations: 8,
+                approvedAspirations: 7,
+                achievements: ["first_aspiration", "five_aspirations", "quality_contributor"]
+            },
+
+            // Level system
+            levels: [
+                { level: 1, name: "Pemula", minPoints: 0, maxPoints: 100 },
+                { level: 2, name: "Kontributor", minPoints: 100, maxPoints: 500 },
+                { level: 3, name: "Aktivis", minPoints: 500, maxPoints: 1000 },
+                { level: 4, name: "Champion", minPoints: 1000, maxPoints: 2500 },
+                { level: 5, name: "Legend", minPoints: 2500, maxPoints: Infinity }
+            ],
+
+            // Point system
+            pointRules: {
+                aspiration_approved: 50,
+                aspiration_featured: 100,
+                first_aspiration: 25,
+                five_aspirations: 50,
+                ten_aspirations: 100,
+                quality_contributor: 75,
+                monthly_top_contributor: 200
+            },
+
+            // Achievements
+            achievements: [
+                { id: "first_aspiration", name: "Aspirasi Pertama", description: "Kirim aspirasi pertama", icon: "fas fa-star" },
+                { id: "five_aspirations", name: "Kontributor Aktif", description: "5 aspirasi disetujui", icon: "fas fa-trophy" },
+                { id: "ten_aspirations", name: "Super Kontributor", description: "10 aspirasi disetujui", icon: "fas fa-crown" },
+                { id: "quality_contributor", name: "Kontributor Berkualitas", description: "3 aspirasi difiturkan", icon: "fas fa-award" },
+                { id: "monthly_top", name: "Top Bulanan", description: "Masuk top 10 bulanan", icon: "fas fa-medal" }
+            ],
+
+            // Rewards catalog
+            rewards: [
+                {
+                    id: 1,
+                    name: "Voucher E-Money Rp 50.000",
+                    description: "Voucher elektronik untuk berbagai merchant",
+                    points: 200,
+                    type: "digital",
+                    image: "fas fa-credit-card"
+                },
+                {
+                    id: 2,
+                    name: "Paket Data 5GB",
+                    description: "Paket internet 5GB berlaku 30 hari",
+                    points: 150,
+                    type: "digital",
+                    image: "fas fa-wifi"
+                },
+                {
+                    id: 3,
+                    name: "Merchandise CivicAI",
+                    description: "Tote bag dan sticker eksklusif CivicAI",
+                    points: 300,
+                    type: "physical",
+                    image: "fas fa-shopping-bag"
+                },
+                {
+                    id: 4,
+                    name: "Buku Civic Engagement",
+                    description: "Buku tentang partisipasi masyarakat",
+                    points: 400,
+                    type: "physical",
+                    image: "fas fa-book"
+                },
+                {
+                    id: 5,
+                    name: "Konsultasi dengan Ahli",
+                    description: "Sesi konsultasi 30 menit dengan pakar kebijakan",
+                    points: 500,
+                    type: "experience",
+                    image: "fas fa-users"
+                },
+                {
+                    id: 6,
+                    name: "Voucher Belanja Rp 100.000",
+                    description: "Voucher belanja di merchant terkemuka",
+                    points: 350,
+                    type: "digital",
+                    image: "fas fa-gift"
+                }
+            ],
+
+            // Leaderboard data
+            leaderboard: [
+                { id: 1, name: "Siti Rahayu", points: 1250, level: 4 },
+                { id: 2, name: "Budi Santoso", points: 980, level: 3 },
+                { id: 3, name: "Ahmad Fauzi", points: 450, level: 2 },
+                { id: 4, name: "Dewi Lestari", points: 420, level: 2 },
+                { id: 5, name: "Rizki Pratama", points: 380, level: 2 },
+                { id: 6, name: "Maya Sari", points: 320, level: 2 },
+                { id: 7, name: "Fajar Nugroho", points: 280, level: 2 },
+                { id: 8, name: "Indah Permata", points: 240, level: 1 },
+                { id: 9, name: "Hendra Wijaya", points: 190, level: 1 },
+                { id: 10, name: "Lina Marlina", points: 160, level: 1 }
+            ],
+
+            // Point history
+            pointHistory: [
+                { id: 1, title: "Aspirasi Disetujui - Perbaikan Jalan", points: 50, date: "2023-10-15", type: "earned" },
+                { id: 2, title: "Achievement - Aspirasi Pertama", points: 25, date: "2023-10-15", type: "earned" },
+                { id: 3, title: "Aspirasi Disetujui - Fasilitas Kesehatan", points: 50, date: "2023-10-18", type: "earned" },
+                { id: 4, title: "Aspirasi Disetujui - Transportasi Umum", points: 50, date: "2023-10-20", type: "earned" },
+                { id: 5, title: "Aspirasi Difiturkan", points: 100, date: "2023-10-22", type: "earned" },
+                { id: 6, title: "Achievement - 5 Aspirasi", points: 50, date: "2023-10-22", type: "earned" },
+                { id: 7, title: "Aspirasi Disetujui - Pendidikan", points: 50, date: "2023-10-25", type: "earned" },
+                { id: 8, title: "Aspirasi Disetujui - Lingkungan", points: 50, date: "2023-10-28", type: "earned" },
+                { id: 9, title: "Achievement - Kontributor Berkualitas", points: 75, date: "2023-10-28", type: "earned" }
+            ]
+        };
+
+        // Initialize the reward system
+        function initializeRewardSystem() {
+            updateUserProfile();
+            updateStats();
+            updateAchievements();
+            updateLeaderboard();
+            updateRewardsCatalog();
+            updatePointHistory();
+        }
+
+        // Update user profile section
+        function updateUserProfile() {
+            const user = rewardSystem.currentUser;
+            const currentLevel = rewardSystem.levels.find(level => level.level === user.level);
+            const nextLevel = rewardSystem.levels.find(level => level.level === user.level + 1);
+            
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userPoints').textContent = user.points;
+            document.getElementById('userLevel').textContent = currentLevel.name;
+            
+            // Add level badge class
+            const levelElement = document.getElementById('userLevel');
+            levelElement.className = 'user-level';
+            levelElement.classList.add(`level-${currentLevel.name.toLowerCase()}`);
+        }
+
+        // Update user stats
+        function updateStats() {
+            const user = rewardSystem.currentUser;
+            const currentLevel = rewardSystem.levels.find(level => level.level === user.level);
+            const nextLevel = rewardSystem.levels.find(level => level.level === user.level + 1);
+            
+            document.getElementById('totalAspirations').textContent = user.totalAspirations;
+            document.getElementById('approvedAspirations').textContent = user.approvedAspirations;
+            document.getElementById('currentLevel').textContent = user.level;
+            
+            if (nextLevel) {
+                const pointsToNext = nextLevel.minPoints - user.points;
+                document.getElementById('pointsToNext').textContent = pointsToNext > 0 ? pointsToNext : 'MAX';
+            } else {
+                document.getElementById('pointsToNext').textContent = 'MAX';
+            }
+        }
+
+        // Update achievements display
+        function updateAchievements() {
+            const container = document.getElementById('achievementsList');
+            const userAchievements = rewardSystem.currentUser.achievements;
+            
+            if (userAchievements.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h4>Belum ada pencapaian</h4>
+                        <p>Mulai kirim aspirasi untuk mendapatkan pencapaian pertama!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            userAchievements.forEach(achievementId => {
+                const achievement = rewardSystem.achievements.find(a => a.id === achievementId);
+                if (achievement) {
+                    html += `
+                        <div class="achievement-badge">
+                            <i class="${achievement.icon} achievement-icon"></i>
+                            <div>
+                                <div class="fw-bold">${achievement.name}</div>
+                                <div class="small">${achievement.description}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Update leaderboard
+        function updateLeaderboard() {
+            const container = document.getElementById('leaderboardList');
+            const currentUserId = rewardSystem.currentUser.id;
+            
+            let html = '';
+            rewardSystem.leaderboard.forEach((user, index) => {
+                const rank = index + 1;
+                const rankClass = rank === 1 ? 'rank-1' : 
+                                rank === 2 ? 'rank-2' : 
+                                rank === 3 ? 'rank-3' : 'rank-other';
+                
+                const isCurrentUser = user.id === currentUserId;
+                const userClass = isCurrentUser ? 'border border-primary' : '';
+                
+                html += `
+                    <div class="leaderboard-item ${userClass}">
+                        <div class="leaderboard-rank ${rankClass}">${rank}</div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-name">
+                                ${user.name} ${isCurrentUser ? '(Anda)' : ''}
+                            </div>
+                            <div class="small text-muted">Level ${user.level}</div>
+                        </div>
+                        <div class="leaderboard-points">${user.points} pts</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Update rewards catalog
+        function updateRewardsCatalog() {
+            const container = document.getElementById('rewardsGrid');
+            const userPoints = rewardSystem.currentUser.points;
+            
+            let html = '';
+            rewardSystem.rewards.forEach(reward => {
+                const canRedeem = userPoints >= reward.points;
+                const buttonText = canRedeem ? 'Tukar Sekarang' : 'Poin Tidak Cukup';
+                
+                html += `
+                    <div class="reward-card">
+                        <div class="reward-image">
+                            <i class="${reward.image}"></i>
+                        </div>
+                        <div class="reward-content">
+                            <h4 class="reward-title">${reward.name}</h4>
+                            <p class="reward-description">${reward.description}</p>
+                            <div class="reward-points">
+                                <span class="points-badge">${reward.points} pts</span>
+                                <span class="reward-type">${reward.type === 'digital' ? 'Digital' : reward.type === 'physical' ? 'Fisik' : 'Pengalaman'}</span>
+                            </div>
+                            <button class="btn btn-redeem" ${canRedeem ? '' : 'disabled'} 
+                                onclick="redeemReward(${reward.id})">
+                                ${buttonText}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Update point history
+        function updatePointHistory() {
+            const container = document.getElementById('pointHistory');
+            
+            if (rewardSystem.pointHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h4>Belum ada riwayat poin</h4>
+                        <p>Poin akan tercatat setelah Anda mengirim aspirasi.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            rewardSystem.pointHistory.forEach(history => {
+                const date = new Date(history.date).toLocaleDateString('id-ID', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                html += `
+                    <div class="history-item">
+                        <div class="history-info">
+                            <div class="history-title">${history.title}</div>
+                            <div class="history-date">${date}</div>
+                        </div>
+                        <div class="history-points ${history.type === 'earned' ? '' : 'negative'}">
+                            ${history.type === 'earned' ? '+' : '-'}${history.points}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Redeem reward function
+        function redeemReward(rewardId) {
+            const reward = rewardSystem.rewards.find(r => r.id === rewardId);
+            const user = rewardSystem.currentUser;
+            
+            if (!reward) {
+                alert('Reward tidak ditemukan!');
+                return;
+            }
+            
+            if (user.points < reward.points) {
+                alert('Poin Anda tidak cukup untuk menukar reward ini!');
+                return;
+            }
+            
+            if (confirm(`Apakah Anda yakin ingin menukar ${reward.points} poin untuk ${reward.name}?`)) {
+                // Deduct points
+                user.points -= reward.points;
+                
+                // Add to point history
+                rewardSystem.pointHistory.unshift({
+                    id: Date.now(),
+                    title: `Tukar Poin - ${reward.name}`,
+                    points: reward.points,
+                    date: new Date().toISOString().split('T')[0],
+                    type: "redeemed"
+                });
+                
+                // Update UI
+                updateUserProfile();
+                updateStats();
+                updateRewardsCatalog();
+                updatePointHistory();
+                
+                alert(`Selamat! Anda berhasil menukar ${reward.name}. Kode penukaran akan dikirim ke email Anda.`);
+            }
+        }
+
+        // Add points function (to be called when user submits an aspiration)
+        function addPoints(points, reason) {
+            const user = rewardSystem.currentUser;
+            user.points += points;
+            
+            // Add to point history
+            rewardSystem.pointHistory.unshift({
+                id: Date.now(),
+                title: reason,
+                points: points,
+                date: new Date().toISOString().split('T')[0],
+                type: "earned"
+            });
+            
+            // Check for level up
+            checkLevelUp();
+            
+            // Update UI
+            updateUserProfile();
+            updateStats();
+            updateRewardsCatalog();
+            updatePointHistory();
+            updateLeaderboard();
+        }
+
+        // Check if user leveled up
+        function checkLevelUp() {
+            const user = rewardSystem.currentUser;
+            const currentLevel = rewardSystem.levels.find(level => level.level === user.level);
+            const nextLevel = rewardSystem.levels.find(level => level.level === user.level + 1);
+            
+            if (nextLevel && user.points >= nextLevel.minPoints) {
+                user.level = nextLevel.level;
+                alert(`Selamat! Anda naik ke level ${nextLevel.name}!`);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeRewardSystem();
+        });
+    </script>
+</body>
+</html>

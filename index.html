@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicAI - Platform Aspirasi Publik Berbasis AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2E86AB;
+            --secondary: #A23B72;
+            --accent: #F18F01;
+            --light: #F5F7FA;
+            --dark: #2C3E50;
+            --success: #27AE60;
+            --danger: #E74C3C;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            background-color: var(--light);
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: var(--dark);
+            margin: 0 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #1B5E7A 100%);
+            color: white;
+            padding: 5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,192C672,181,768,139,864,128C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: bottom;
+        }
+        
+        .hero h1 {
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            font-size: 2.8rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent);
+            border-color: var(--accent);
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #e07d01;
+            border-color: #e07d01;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-outline-light {
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s;
+        }
+        
+        .btn-outline-light:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .section-title h2 {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            height: 100%;
+            border-top: 4px solid var(--primary);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 0 30px 30px;
+            border-color: transparent transparent var(--primary) transparent;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover::after {
+            border-width: 0 0 40px 40px;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-card h4 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .dashboard-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-card h4 {
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+        }
+        
+        .map-container {
+            height: 400px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .map-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+        
+        .leaderboard-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .leaderboard-rank {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+        
+        .leaderboard-content {
+            flex-grow: 1;
+        }
+        
+        .leaderboard-content h5 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .leaderboard-content p {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+        
+        .leaderboard-stats {
+            display: flex;
+            align-items: center;
+        }
+        
+        .sentiment-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+        }
+        
+        .sentiment-positive {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+        
+        .sentiment-negative {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+        
+        .sentiment-neutral {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+        
+        .support-count {
+            display: flex;
+            align-items: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .support-count i {
+            margin-right: 0.25rem;
+            color: var(--accent);
+        }
+        
+        .form-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-control, .form-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(46, 134, 171, 0.25);
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-links h5 {
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            border-top: 1px solid #34495e;
+            padding-top: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+        
+        .tab-content {
+            padding: 2rem 0;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            border-radius: 0;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            background-color: transparent;
+        }
+        
+        .progress {
+            height: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-bar {
+            background-color: var(--primary);
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        .map-marker {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+        }
+        
+        .map-marker::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: rgba(241, 143, 1, 0.3);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(2);
+                opacity: 0;
+            }
+        }
+        
+        .map-tooltip {
+            position: absolute;
+            background-color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            font-size: 0.9rem;
+            z-index: 10;
+            display: none;
+        }
+        
+        /* Layout khusus untuk fitur cards */
+        .features-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .feature-card {
+                margin-bottom: 1.5rem;
+            }
+            
+            .map-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-brain me-2"></i>CivicAI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Fitur</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reward.html">Reward</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="leaderboard.html">Leaderboard</a>
+                    </li>
+                </ul>
+                <a href="#aspirasi" class="btn btn-primary ms-3">Sampaikan Aspirasi</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1>Bangun Demokrasi Digital yang Etis, Transparan, dan Inklusif</h1>
+                    <p>CivicAI adalah platform aspirasi publik berbasis kecerdasan buatan untuk memperkuat partisipasi masyarakat dalam pembangunan Indonesia yang berkeadilan berbasis data.</p>
+                    <a href="#features" class="btn btn-primary me-2">Jelajahi Fitur</a>
+                    <a href="#aspirasi" class="btn btn-outline-light">Sampaikan Aspirasi</a>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="CivicAI Dashboard" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5">
+        <div class="container">
+            <div class="section-title">
+                <h2>Fitur-Fitur Utama CivicAI</h2>
+                <p class="text-muted">Teknologi canggih untuk demokrasi yang lebih baik</p>
+            </div>
+            
+            <!-- 3 Card Vertikal -->
+            <div class="features-vertical">
+                <div class="feature-card" onclick="window.location.href='aspirasi publik.html'">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h4>Wilayah Aspirasi Publik</h4>
+                    <p>Pengguna memilih kota atau provinsi asal untuk mengirim aspirasi sesuai daerah masing-masing, menjamin keadilan digital dan keterwakilan wilayah di seluruh Indonesia.</p>
+                    <div class="text-end mt-3">
+                        <small class="text-primary">Klik untuk detail →</small>
+                    </div>
+                </div>
+                
+                <div class="feature-card" onclick="window.location.href='Fitur Ai.html'">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h4>AI Sentiment & Ethics Analyzer</h4>
+                    <p>Sistem menganalisis sentimen (positif/negatif/netral) dan menilai kelayakan etika dari setiap aspirasi dengan menerapkan etika rekayasa agar AI tidak bias dan tetap adil.</p>
+                    <div class="text-end mt-3">
+                        <small class="text-primary">Klik untuk detail →</small>
+                    </div>
+                </div>
+                
+                <div class="feature-card" onclick="window.location.href='transparansi.html'">
+                    <div class="feature-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h4>Transparansi Aspirasi Publik</h4>
+                    <p>Semua aspirasi tampil terbuka (tanpa data pribadi) dalam dashboard interaktif per wilayah untuk menguatkan prinsip transparansi dan akuntabilitas publik.</p>
+                    <div class="text-end mt-3">
+                        <small class="text-primary">Klik untuk detail →</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="py-5 bg-light">
+        <div class="container">
+            <div class="section-title">
+                <h2>Dashboard Nasional</h2>
+                <p class="text-muted">Visualisasi data aspirasi masyarakat Indonesia</p>
+            </div>
+            
+            <div class="row mb-5">
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-number">12,548</div>
+                        <div class="stat-label">Total Aspirasi</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-number">34</div>
+                        <div class="stat-label">Provinsi Terjangkau</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-number">68%</div>
+                        <div class="stat-label">Aspirasi Positif</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-number">92%</div>
+                        <div class="stat-label">Tingkat Kepuasan</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-8 mb-4">
+                    <div class="dashboard-card">
+                        <h4>Peta Sebaran Aspirasi</h4>
+                        <div class="map-container">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Indonesia_map.svg/1200px-Indonesia_map.svg.png" alt="Peta Indonesia">
+                            <!-- Markers will be added dynamically with JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="dashboard-card">
+                        <h4>Kategori Aspirasi</h4>
+                        <div class="chart-container">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="dashboard-card">
+                        <h4>Trend Sentimen Aspirasi</h4>
+                        <div class="chart-container">
+                            <canvas id="sentimentChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="dashboard-card">
+                        <h4>Topik Populer</h4>
+                        <div class="chart-container">
+                            <canvas id="topicChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Aspiration Form Section -->
+    <section id="aspirasi" class="py-5">
+        <div class="container">
+            <div class="section-title">
+                <h2>Sampaikan Aspirasi Anda</h2>
+                <p class="text-muted">Berpartisipasi aktif dalam pembangunan Indonesia yang berkeadilan</p>
+            </div>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="form-container">
+                        <form id="aspirationForm">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="province" class="form-label">Provinsi</label>
+                                    <select class="form-select" id="province" required>
+                                        <option value="" selected disabled>Pilih Provinsi</option>
+                                        <option value="DKI Jakarta">DKI Jakarta</option>
+                                        <option value="Jawa Barat">Jawa Barat</option>
+                                        <option value="Jawa Tengah">Jawa Tengah</option>
+                                        <option value="Jawa Timur">Jawa Timur</option>
+                                        <option value="Banten">Banten</option>
+                                        <option value="DI Yogyakarta">DI Yogyakarta</option>
+                                        <option value="Sumatera Utara">Sumatera Utara</option>
+                                        <option value="Sumatera Barat">Sumatera Barat</option>
+                                        <option value="Riau">Riau</option>
+                                        <option value="Bali">Bali</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="city" class="form-label">Kota/Kabupaten</label>
+                                    <select class="form-select" id="city" required>
+                                        <option value="" selected disabled>Pilih Kota/Kabupaten</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Kategori Aspirasi</label>
+                                <select class="form-select" id="category" required>
+                                    <option value="" selected disabled>Pilih Kategori</option>
+                                    <option value="Pendidikan">Pendidikan</option>
+                                    <option value="Kesehatan">Kesehatan</option>
+                                    <option value="Lingkungan">Lingkungan</option>
+                                    <option value="Sosial">Sosial</option>
+                                    <option value="Transportasi">Transportasi</option>
+                                    <option value="Infrastruktur">Infrastruktur</option>
+                                    <option value="Ekonomi">Ekonomi</option>
+                                    <option value="Hukum">Hukum</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Judul Aspirasi</label>
+                                <input type="text" class="form-control" id="title" placeholder="Masukkan judul aspirasi Anda" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Deskripsi Aspirasi</label>
+                                <textarea class="form-control" id="description" rows="5" placeholder="Jelaskan aspirasi Anda secara detail" required></textarea>
+                                <div class="form-text">Pastikan aspirasi Anda tidak mengandung ujaran kebencian, SARA, atau misinformasi.</div>
+                            </div>
+                            
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="anonymous">
+                                <label class="form-check-label" for="anonymous">Sampaikan secara anonim</label>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Kirim Aspirasi</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section id="leaderboard" class="py-5 bg-light">
+        <div class="container">
+            <div class="section-title">
+                <h2>Leaderboard Aspirasi Terpopuler</h2>
+                <p class="text-muted">Aspirasi dengan dukungan terbanyak dan rating etika terbaik</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="dashboard-card">
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank">1</div>
+                            <div class="leaderboard-content">
+                                <h5>Perbaikan Sistem Drainase di Jakarta Pusat</h5>
+                                <p>Usulan perbaikan sistem drainase untuk mengatasi banjir di wilayah Jakarta Pusat, terutama saat musim hujan.</p>
+                            </div>
+                            <div class="leaderboard-stats">
+                                <span class="sentiment-badge sentiment-positive">Positif</span>
+                                <div class="support-count">
+                                    <i class="fas fa-heart"></i> 1,248
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank">2</div>
+                            <div class="leaderboard-content">
+                                <h5>Penambahan Fasilitas Kesehatan di Daerah Terpencil Papua</h5>
+                                <p>Pengadaan puskesmas dan tenaga medis untuk meningkatkan akses kesehatan masyarakat di daerah terpencil Papua.</p>
+                            </div>
+                            <div class="leaderboard-stats">
+                                <span class="sentiment-badge sentiment-positive">Positif</span>
+                                <div class="support-count">
+                                    <i class="fas fa-heart"></i> 987
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank">3</div>
+                            <div class="leaderboard-content">
+                                <h5>Revitalisasi Perpustakaan Umum di Surabaya</h5>
+                                <p>Modernisasi perpustakaan umum dengan penambahan koleksi buku digital dan ruang baca yang nyaman.</p>
+                            </div>
+                            <div class="leaderboard-stats">
+                                <span class="sentiment-badge sentiment-positive">Positif</span>
+                                <div class="support-count">
+                                    <i class="fas fa-heart"></i> 856
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank">4</div>
+                            <div class="leaderboard-content">
+                                <h5>Pengembangan Transportasi Umum di Bandung</h5>
+                                <p>Pengembangan sistem transportasi umum yang terintegrasi untuk mengurangi kemacetan di Kota Bandung.</p>
+                            </div>
+                            <div class="leaderboard-stats">
+                                <span class="sentiment-badge sentiment-neutral">Netral</span>
+                                <div class="support-count">
+                                    <i class="fas fa-heart"></i> 732
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="leaderboard-item">
+                            <div class="leaderboard-rank">5</div>
+                            <div class="leaderboard-content">
+                                <h5>Program Pelatihan Kewirausahaan untuk Pemuda</h5>
+                                <p>Penyelenggaraan pelatihan kewirausahaan bagi pemuda untuk mengurangi angka pengangguran dan meningkatkan ekonomi kreatif.</p>
+                            </div>
+                            <div class="leaderboard-stats">
+                                <span class="sentiment-badge sentiment-positive">Positif</span>
+                                <div class="support-count">
+                                    <i class="fas fa-heart"></i> 654
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4 class="mb-3"><i class="fas fa-brain me-2"></i>CivicAI</h4>
+                    <p>Platform aspirasi publik berbasis kecerdasan buatan untuk membangun demokrasi digital yang etis, transparan, dan inklusif di Indonesia.</p>
+                    <div class="mt-4">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <div class="footer-links">
+                        <h5>Navigasi</h5>
+                        <ul>
+                            <li><a href="#home">Beranda</a></li>
+                            <li><a href="#features">Fitur</a></li>
+                            <li><a href="#dashboard">Dashboard</a></li>
+                            <li><a href="#aspirasi">Aspirasi</a></li>
+                            <li><a href="#leaderboard">Leaderboard</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="footer-links">
+                        <h5>Kebijakan</h5>
+                        <ul>
+                            <li><a href="#">Kebijakan Privasi</a></li>
+                            <li><a href="#">Syarat dan Ketentuan</a></li>
+                            <li><a href="#">Etika Penggunaan</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <div class="footer-links">
+                        <h5>Kontak</h5>
+                        <ul>
+                            <li><i class="fas fa-map-marker-alt me-2"></i> Surabaya, Indonesia</li>
+                            <li><i class="fas fa-envelope me-2"></i> info@civicai.id</li>
+                            <li><i class="fas fa-phone me-2"></i> +62 21 1234 5678</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 CivicAI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simple form submission handling
+        document.getElementById('aspirationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            alert('Aspirasi Anda telah berhasil dikirim! Terima kasih telah berpartisipasi dalam pembangunan Indonesia yang lebih baik.');
+            
+            // Reset the form
+            this.reset();
+        });
+        
+        // Province and city data (simplified for demo)
+        const cityData = {
+            "DKI Jakarta": ["Jakarta Pusat", "Jakarta Selatan", "Jakarta Timur", "Jakarta Barat", "Jakarta Utara"],
+            "Jawa Barat": ["Bandung", "Bekasi", "Bogor", "Depok", "Cimahi", "Tasikmalaya"],
+            "Jawa Tengah": ["Semarang", "Surakarta", "Tegal", "Pekalongan", "Magelang"],
+            "Jawa Timur": ["Surabaya", "Malang", "Kediri", "Blitar", "Madiun"],
+            "Banten": ["Tangerang", "Serang", "Cilegon", "Tangerang Selatan"],
+            "DI Yogyakarta": ["Yogyakarta", "Bantul", "Sleman", "Gunungkidul", "Kulon Progo"],
+            "Sumatera Utara": ["Medan", "Binjai", "Pematang Siantar", "Tebing Tinggi"],
+            "Sumatera Barat": ["Padang", "Bukittinggi", "Payakumbuh", "Solok"],
+            "Riau": ["Pekanbaru", "Dumai", "Bengkalis", "Rengat"],
+            "Bali": ["Denpasar", "Badung", "Gianyar", "Tabanan"]
+        };
+        
+        // Update city options based on selected province
+        document.getElementById('province').addEventListener('change', function() {
+            const province = this.value;
+            const citySelect = document.getElementById('city');
+            
+            // Clear existing options
+            citySelect.innerHTML = '<option value="" selected disabled>Pilih Kota/Kabupaten</option>';
+            
+            // Add new options based on selected province
+            if (province && cityData[province]) {
+                cityData[province].forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+            }
+        });
+
+        // Chart.js Implementation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Category Chart (Pie Chart)
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            const categoryChart = new Chart(categoryCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Pendidikan', 'Kesehatan', 'Lingkungan', 'Sosial', 'Transportasi', 'Infrastruktur', 'Ekonomi', 'Lainnya'],
+                    datasets: [{
+                        data: [22, 18, 15, 12, 10, 8, 8, 7],
+                        backgroundColor: [
+                            '#2E86AB', '#A23B72', '#F18F01', '#27AE60', 
+                            '#E74C3C', '#9B59B6', '#3498DB', '#95A5A6'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Sentiment Chart (Line Chart)
+            const sentimentCtx = document.getElementById('sentimentChart').getContext('2d');
+            const sentimentChart = new Chart(sentimentCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [
+                        {
+                            label: 'Positif',
+                            data: [65, 59, 70, 71, 66, 65, 68, 72, 75, 73, 74, 76],
+                            borderColor: '#27AE60',
+                            backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Netral',
+                            data: [28, 30, 25, 24, 26, 25, 23, 22, 20, 21, 20, 19],
+                            borderColor: '#3498DB',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Negatif',
+                            data: [7, 11, 5, 5, 8, 10, 9, 6, 5, 6, 6, 5],
+                            borderColor: '#E74C3C',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Topic Chart (Bar Chart)
+            const topicCtx = document.getElementById('topicChart').getContext('2d');
+            const topicChart = new Chart(topicCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Pendidikan Digital', 'Kesehatan Masyarakat', 'Infrastruktur', 'Lingkungan', 'Transportasi', 'Ekonomi Kreatif'],
+                    datasets: [{
+                        label: 'Jumlah Aspirasi',
+                        data: [1200, 980, 850, 720, 650, 580],
+                        backgroundColor: '#2E86AB',
+                        borderColor: '#1B5E7A',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Map Markers
+            const mapContainer = document.querySelector('.map-container');
+            const mapImage = mapContainer.querySelector('img');
+            
+            // Wait for the image to load to get its dimensions
+            mapImage.onload = function() {
+                const mapWidth = mapContainer.offsetWidth;
+                const mapHeight = mapContainer.offsetHeight;
+                
+                // Define marker positions (relative to map dimensions)
+                const markers = [
+                    { x: 0.3, y: 0.5, title: 'Jakarta: 2,450 aspirasi', count: 2450 },
+                    { x: 0.25, y: 0.6, title: 'Jawa Barat: 1,890 aspirasi', count: 1890 },
+                    { x: 0.35, y: 0.65, title: 'Jawa Tengah: 1,520 aspirasi', count: 1520 },
+                    { x: 0.4, y: 0.7, title: 'Jawa Timur: 1,340 aspirasi', count: 1340 },
+                    { x: 0.25, y: 0.2, title: 'Sumatera Utara: 980 aspirasi', count: 980 },
+                    { x: 0.2, y: 0.4, title: 'Sumatera Barat: 750 aspirasi', count: 750 },
+                    { x: 0.7, y: 0.4, title: 'Kalimantan Timur: 620 aspirasi', count: 620 },
+                    { x: 0.85, y: 0.6, title: 'Sulawesi Selatan: 580 aspirasi', count: 580 },
+                    { x: 0.9, y: 0.8, title: 'Papua: 320 aspirasi', count: 320 }
+                ];
+                
+                // Create markers
+                markers.forEach(marker => {
+                    const markerEl = document.createElement('div');
+                    markerEl.className = 'map-marker';
+                    markerEl.style.left = (marker.x * 100) + '%';
+                    markerEl.style.top = (marker.y * 100) + '%';
+                    
+                    // Create tooltip
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'map-tooltip';
+                    tooltip.textContent = marker.title;
+                    markerEl.appendChild(tooltip);
+                    
+                    // Add hover effect
+                    markerEl.addEventListener('mouseenter', function() {
+                        tooltip.style.display = 'block';
+                        // Position tooltip
+                        tooltip.style.left = '50%';
+                        tooltip.style.bottom = '100%';
+                        tooltip.style.transform = 'translateX(-50%)';
+                    });
+                    
+                    markerEl.addEventListener('mouseleave', function() {
+                        tooltip.style.display = 'none';
+                    });
+                    
+                    mapContainer.appendChild(markerEl);
+                });
+            };
+            
+            // If image is already loaded (cached)
+            if (mapImage.complete) {
+                mapImage.onload();
+            }
+        });
+    </script>
+</body>
+</html>

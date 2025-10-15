@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard Aspirasi - CivicAI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563EB;
+            --primary-light: #3B82F6;
+            --primary-dark: #1D4ED8;
+            --secondary: #64748B;
+            --light: #F8FAFC;
+            --dark: #1E293B;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            background-color: #F1F5F9;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: var(--dark);
+            margin: 0 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+        }
+        
+        .feature-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .feature-header-content {
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-title {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 2.2rem;
+        }
+        
+        .feature-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            max-width: 1200px;
+        }
+        
+        .leaderboard-section {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--light);
+            font-size: 1.5rem;
+        }
+        
+        .leaderboard-tabs {
+            display: flex;
+            border-bottom: 1px solid #E2E8F0;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .leaderboard-tab {
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            color: var(--secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .leaderboard-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .leaderboard-tab:hover {
+            color: var(--primary);
+        }
+        
+        .leaderboard-content {
+            display: none;
+        }
+        
+        .leaderboard-content.active {
+            display: block;
+        }
+        
+        .leaderboard-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .leaderboard-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .rank-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-weight: 700;
+            color: white;
+            margin-right: 1rem;
+        }
+        
+        .rank-1 {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+        
+        .rank-2 {
+            background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+        }
+        
+        .rank-3 {
+            background: linear-gradient(135deg, #CD7F32, #A56A2B);
+        }
+        
+        .rank-other {
+            background-color: var(--secondary);
+        }
+        
+        .leaderboard-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .leaderboard-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .leaderboard-subtitle {
+            color: var(--secondary);
+            font-size: 0.875rem;
+        }
+        
+        .leaderboard-stats {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--secondary);
+        }
+        
+        .progress {
+            height: 8px;
+            background-color: #E2E8F0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .province-map {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .province-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .province-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .province-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .province-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .province-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .province-subtitle {
+            color: var(--secondary);
+            font-size: 0.875rem;
+        }
+        
+        .province-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        
+        .city-list {
+            margin-top: 1rem;
+        }
+        
+        .city-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #F1F5F9;
+        }
+        
+        .city-item:last-child {
+            border-bottom: none;
+        }
+        
+        .city-name {
+            font-weight: 500;
+        }
+        
+        .city-stats {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .city-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .city-value {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .city-label {
+            font-size: 0.7rem;
+            color: var(--secondary);
+        }
+        
+        .table-responsive {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table thead th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 1rem;
+        }
+        
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-color: #F1F5F9;
+        }
+        
+        .table tbody tr:hover {
+            background-color: #F8FAFC;
+        }
+        
+        .badge {
+            font-weight: 500;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+        }
+        
+        .badge-success {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+        
+        .badge-warning {
+            background-color: #FEF3C7;
+            color: #92400E;
+        }
+        
+        .badge-danger {
+            background-color: #FEE2E2;
+            color: #991B1B;
+        }
+        
+        .medal {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-weight: 700;
+            color: white;
+            margin-right: 0.5rem;
+        }
+        
+        .medal-gold {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+        
+        .medal-silver {
+            background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+        }
+        
+        .medal-bronze {
+            background: linear-gradient(135deg, #CD7F32, #A56A2B);
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-links h5 {
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-links a {
+            color: #94A3B8;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            border-top: 1px solid #334155;
+            padding-top: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: #94A3B8;
+            font-size: 0.9rem;
+        }
+        
+        .highlight-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+        }
+        
+        .highlight-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .highlight-subtitle {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+        
+        .highlight-stats {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .highlight-stat {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .highlight-value {
+            font-weight: 700;
+            font-size: 2rem;
+            line-height: 1;
+        }
+        
+        .highlight-label {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+        
+        .individual-card {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .individual-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .individual-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: 600;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .individual-info {
+            flex: 1;
+        }
+        
+        .individual-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .individual-location {
+            font-size: 0.875rem;
+            color: var(--secondary);
+        }
+        
+        .individual-stats {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .individual-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .individual-value {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .individual-label {
+            font-size: 0.75rem;
+            color: var(--secondary);
+        }
+        
+        @media (max-width: 768px) {
+            .feature-header {
+                padding: 2rem 0;
+            }
+            
+            .feature-title {
+                font-size: 1.8rem;
+            }
+            
+            .leaderboard-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .leaderboard-tab {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+            }
+            
+            .leaderboard-stats {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .province-map {
+                grid-template-columns: 1fr;
+            }
+            
+            .highlight-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .individual-stats {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-brain me-2"></i>CivicAI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#home">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Fitur</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="aspirasi.html">Aspirasi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="leaderboard.html">Leaderboard</a>
+                    </li>
+                </ul>
+                <a href="aspirasi.html" class="btn btn-primary ms-3">Sampaikan Aspirasi</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Feature Header -->
+    <div class="feature-header">
+        <div class="container">
+            <div class="feature-header-content">
+                <div class="feature-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h1 class="feature-title">Leaderboard Aspirasi</h1>
+                <p class="feature-subtitle">Lihat peringkat wilayah dan individu berdasarkan jumlah aspirasi dan kualitas etika. Fokus pada wilayah Jawa untuk pengembangan yang lebih terarah.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Highlight Stats -->
+        <div class="highlight-card">
+            <h2 class="highlight-title">Wilayah Jawa Unggul dalam Partisipasi</h2>
+            <p class="highlight-subtitle">Wilayah Jawa menunjukkan partisipasi aktif dalam menyampaikan aspirasi publik dengan kualitas etika yang tinggi.</p>
+            <div class="highlight-stats">
+                <div class="highlight-stat">
+                    <div class="highlight-value">12.458</div>
+                    <div class="highlight-label">Total Aspirasi</div>
+                </div>
+                <div class="highlight-stat">
+                    <div class="highlight-value">86%</div>
+                    <div class="highlight-label">Rata-rata Skor Etika</div>
+                </div>
+                <div class="highlight-stat">
+                    <div class="highlight-value">6</div>
+                    <div class="highlight-label">Provinsi di Jawa</div>
+                </div>
+                <div class="highlight-stat">
+                    <div class="highlight-value">94</div>
+                    <div class="highlight-label">Kota/Kabupaten</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Tabs -->
+        <div class="leaderboard-tabs">
+            <div class="leaderboard-tab active" data-target="province-leaderboard">Provinsi</div>
+            <div class="leaderboard-tab" data-target="city-leaderboard">Kota/Kabupaten</div>
+            <div class="leaderboard-tab" data-target="individual-leaderboard">Individu</div>
+            <div class="leaderboard-tab" data-target="ethics-leaderboard">Etika Tertinggi</div>
+            <div class="leaderboard-tab" data-target="category-leaderboard">Berdasarkan Bidang</div>
+        </div>
+
+        <!-- Province Leaderboard -->
+        <div class="leaderboard-content active" id="province-leaderboard">
+            <h2 class="section-title">Peringkat Provinsi di Jawa</h2>
+            <p class="text-muted mb-4">Berdasarkan jumlah aspirasi yang diterima</p>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <!-- Top 3 Provinces -->
+                    <div class="leaderboard-card">
+                        <div class="leaderboard-header">
+                            <div class="rank-badge rank-1">1</div>
+                            <div>
+                                <div class="leaderboard-title">Jawa Barat</div>
+                                <div class="leaderboard-subtitle">3.245 aspirasi</div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">84%</div>
+                                <div class="stat-label">Skor Etika</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">18</div>
+                                <div class="stat-label">Kota/Kabupaten</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">Pendidikan</div>
+                                <div class="stat-label">Bidang Terpopuler</div>
+                            </div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-primary" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="leaderboard-card">
+                        <div class="leaderboard-header">
+                            <div class="rank-badge rank-2">2</div>
+                            <div>
+                                <div class="leaderboard-title">Jawa Timur</div>
+                                <div class="leaderboard-subtitle">2.876 aspirasi</div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">87%</div>
+                                <div class="stat-label">Skor Etika</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">16</div>
+                                <div class="stat-label">Kota/Kabupaten</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">Kesehatan</div>
+                                <div class="stat-label">Bidang Terpopuler</div>
+                            </div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-primary" style="width: 88%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="leaderboard-card">
+                        <div class="leaderboard-header">
+                            <div class="rank-badge rank-3">3</div>
+                            <div>
+                                <div class="leaderboard-title">Jawa Tengah</div>
+                                <div class="leaderboard-subtitle">2.543 aspirasi</div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">89%</div>
+                                <div class="stat-label">Skor Etika</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">15</div>
+                                <div class="stat-label">Kota/Kabupaten</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">Transportasi</div>
+                                <div class="stat-label">Bidang Terpopuler</div>
+                            </div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-primary" style="width: 78%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Other Provinces -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th width="60">Peringkat</th>
+                                    <th>Provinsi</th>
+                                    <th>Jumlah Aspirasi</th>
+                                    <th>Skor Etika</th>
+                                    <th>Kota/Kabupaten</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="rank-badge rank-other">4</div>
+                                    </td>
+                                    <td>DKI Jakarta</td>
+                                    <td>1,987</td>
+                                    <td>
+                                        <span class="badge badge-success">91%</span>
+                                    </td>
+                                    <td>5</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="rank-badge rank-other">5</div>
+                                    </td>
+                                    <td>Banten</td>
+                                    <td>1,245</td>
+                                    <td>
+                                        <span class="badge badge-success">85%</span>
+                                    </td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="rank-badge rank-other">6</div>
+                                    </td>
+                                    <td>DI Yogyakarta</td>
+                                    <td>962</td>
+                                    <td>
+                                        <span class="badge badge-success">93%</span>
+                                    </td>
+                                    <td>5</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <!-- Province Map Visualization -->
+                    <div class="province-map">
+                        <div class="province-card">
+                            <div class="province-header">
+                                <div class="province-icon" style="background-color: #3B82F6;">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <div class="province-title">Distribusi Aspirasi</div>
+                                    <div class="province-subtitle">Per Provinsi di Jawa</div>
+                                </div>
+                            </div>
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-primary" style="width: 26%">Jabar 26%</div>
+                            </div>
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-success" style="width: 23%">Jatim 23%</div>
+                            </div>
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-info" style="width: 20%">Jateng 20%</div>
+                            </div>
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-warning" style="width: 16%">DKI 16%</div>
+                            </div>
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-danger" style="width: 10%">Banten 10%</div>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-secondary" style="width: 5%">DIY 5%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="province-card">
+                            <div class="province-header">
+                                <div class="province-icon" style="background-color: #10B981;">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div>
+                                    <div class="province-title">Pertumbuhan</div>
+                                    <div class="province-subtitle">Bulan Terakhir</div>
+                                </div>
+                            </div>
+                            <div class="city-list">
+                                <div class="city-item">
+                                    <div class="city-name">Jawa Barat</div>
+                                    <div class="city-stats">
+                                        <div class="city-stat">
+                                            <div class="city-value text-success">+12%</div>
+                                            <div class="city-label">Pertumbuhan</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="city-item">
+                                    <div class="city-name">Jawa Timur</div>
+                                    <div class="city-stats">
+                                        <div class="city-stat">
+                                            <div class="city-value text-success">+8%</div>
+                                            <div class="city-label">Pertumbuhan</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="city-item">
+                                    <div class="city-name">Jawa Tengah</div>
+                                    <div class="city-stats">
+                                        <div class="city-stat">
+                                            <div class="city-value text-success">+15%</div>
+                                            <div class="city-label">Pertumbuhan</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="city-item">
+                                    <div class="city-name">DKI Jakarta</div>
+                                    <div class="city-stats">
+                                        <div class="city-stat">
+                                            <div class="city-value text-success">+5%</div>
+                                            <div class="city-label">Pertumbuhan</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- City Leaderboard -->
+        <div class="leaderboard-content" id="city-leaderboard">
+            <h2 class="section-title">Peringkat Kota/Kabupaten di Jawa</h2>
+            <p class="text-muted mb-4">Berdasarkan jumlah aspirasi yang diterima</p>
+            
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th width="60">Peringkat</th>
+                            <th>Kota/Kabupaten</th>
+                            <th>Provinsi</th>
+                            <th>Jumlah Aspirasi</th>
+                            <th>Skor Etika</th>
+                            <th>Bidang Terpopuler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="medal medal-gold">1</div>
+                            </td>
+                            <td>Kota Bandung</td>
+                            <td>Jawa Barat</td>
+                            <td>856</td>
+                            <td>
+                                <span class="badge badge-success">88%</span>
+                            </td>
+                            <td>Pendidikan</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="medal medal-silver">2</div>
+                            </td>
+                            <td>Kota Surabaya</td>
+                            <td>Jawa Timur</td>
+                            <td>792</td>
+                            <td>
+                                <span class="badge badge-success">90%</span>
+                            </td>
+                            <td>Kesehatan</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="medal medal-bronze">3</div>
+                            </td>
+                            <td>Kota Semarang</td>
+                            <td>Jawa Tengah</td>
+                            <td>654</td>
+                            <td>
+                                <span class="badge badge-success">87%</span>
+                            </td>
+                            <td>Transportasi</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Kota Jakarta Selatan</td>
+                            <td>DKI Jakarta</td>
+                            <td>621</td>
+                            <td>
+                                <span class="badge badge-success">92%</span>
+                            </td>
+                            <td>Infrastruktur</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Kota Malang</td>
+                            <td>Jawa Timur</td>
+                            <td>587</td>
+                            <td>
+                                <span class="badge badge-success">85%</span>
+                            </td>
+                            <td>Lingkungan</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Kota Bogor</td>
+                            <td>Jawa Barat</td>
+                            <td>543</td>
+                            <td>
+                                <span class="badge badge-success">83%</span>
+                            </td>
+                            <td>Sosial</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Kota Yogyakarta</td>
+                            <td>DI Yogyakarta</td>
+                            <td>512</td>
+                            <td>
+                                <span class="badge badge-success">94%</span>
+                            </td>
+                            <td>Pendidikan</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Kota Tangerang</td>
+                            <td>Banten</td>
+                            <td>487</td>
+                            <td>
+                                <span class="badge badge-warning">79%</span>
+                            </td>
+                            <td>Transportasi</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Kota Bekasi</td>
+                            <td>Jawa Barat</td>
+                            <td>465</td>
+                            <td>
+                                <span class="badge badge-success">86%</span>
+                            </td>
+                            <td>Fasilitas Umum</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Kota Surakarta</td>
+                            <td>Jawa Tengah</td>
+                            <td>432</td>
+                            <td>
+                                <span class="badge badge-success">89%</span>
+                            </td>
+                            <td>Kesehatan</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Individual Leaderboard -->
+        <div class="leaderboard-content" id="individual-leaderboard">
+            <h2 class="section-title">Peringkat Individu</h2>
+            <p class="text-muted mb-4">Berdasarkan jumlah aspirasi yang disampaikan</p>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="leaderboard-card">
+                        <div class="leaderboard-header">
+                            <div class="rank-badge rank-1">1</div>
+                            <div>
+                                <div class="leaderboard-title">Ahmad Fauzi</div>
+                                <div class="leaderboard-subtitle">Kota Bandung, Jawa Barat</div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">42</div>
+                                <div class="stat-label">Aspirasi</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">89%</div>
+                                <div class="stat-label">Skor Etika</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">Pendidikan</div>
+                                <div class="stat-label">Bidang Favorit</div>
+                            </div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-primary" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="leaderboard-card">
+                        <div class="leaderboard-header">
+                            <div class="rank-badge rank-2">2</div>
+                            <div>
+                                <div class="leaderboard-title">Siti Rahayu</div>
+                                <div class="leaderboard-subtitle">Kota Surabaya, Jawa Timur</div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">38</div>
+                                <div class="stat-label">Aspirasi</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">92%</div>
+                                <div class="stat-label">Skor Etika</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">Kesehatan</div>
+                                <div class="stat-label">Bidang Favorit</div>
+                            </div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-primary" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="leaderboard-card">
+                        <div class="leaderboard-header">
+                            <div class="rank-badge rank-3">3</div>
+                            <div>
+                                <div class="leaderboard-title">Budi Santoso</div>
+                                <div class="leaderboard-subtitle">Kota Semarang, Jawa Tengah</div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">35</div>
+                                <div class="stat-label">Aspirasi</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">85%</div>
+                                <div class="stat-label">Skor Etika</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">Transportasi</div>
+                                <div class="stat-label">Bidang Favorit</div>
+                            </div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-primary" style="width: 83%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="province-card">
+                        <div class="province-header">
+                            <div class="province-icon" style="background-color: #8B5CF6;">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div>
+                                <div class="province-title">Partisipasi Individu</div>
+                                <div class="province-subtitle">Berdasarkan Wilayah</div>
+                            </div>
+                        </div>
+                        <div class="city-list">
+                            <div class="city-item">
+                                <div class="city-name">Jawa Barat</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value">8</div>
+                                        <div class="city-label">Individu</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Jawa Timur</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value">7</div>
+                                        <div class="city-label">Individu</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Jawa Tengah</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value">6</div>
+                                        <div class="city-label">Individu</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">DKI Jakarta</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value">5</div>
+                                        <div class="city-label">Individu</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="province-card mt-3">
+                        <div class="province-header">
+                            <div class="province-icon" style="background-color: #F59E0B;">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <div>
+                                <div class="province-title">Pencapaian Individu</div>
+                                <div class="province-subtitle">Bulan Ini</div>
+                            </div>
+                        </div>
+                        <div class="city-list">
+                            <div class="city-item">
+                                <div class="city-name">Ahmad Fauzi</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value text-success">+5</div>
+                                        <div class="city-label">Aspirasi</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Siti Rahayu</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value text-success">+4</div>
+                                        <div class="city-label">Aspirasi</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Budi Santoso</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value text-success">+3</div>
+                                        <div class="city-label">Aspirasi</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional Individuals -->
+            <h3 class="section-title mt-5">Individu Lainnya</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="individual-card">
+                        <div class="individual-avatar" style="background-color: #3B82F6;">DW</div>
+                        <div class="individual-info">
+                            <div class="individual-name">Dewi Wulandari</div>
+                            <div class="individual-location">Kota Malang, Jawa Timur</div>
+                        </div>
+                        <div class="individual-stats">
+                            <div class="individual-stat">
+                                <div class="individual-value">32</div>
+                                <div class="individual-label">Aspirasi</div>
+                            </div>
+                            <div class="individual-stat">
+                                <div class="individual-value">88%</div>
+                                <div class="individual-label">Etika</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="individual-card">
+                        <div class="individual-avatar" style="background-color: #10B981;">RS</div>
+                        <div class="individual-info">
+                            <div class="individual-name">Rizki Setiawan</div>
+                            <div class="individual-location">Kota Bogor, Jawa Barat</div>
+                        </div>
+                        <div class="individual-stats">
+                            <div class="individual-stat">
+                                <div class="individual-value">29</div>
+                                <div class="individual-label">Aspirasi</div>
+                            </div>
+                            <div class="individual-stat">
+                                <div class="individual-value">84%</div>
+                                <div class="individual-label">Etika</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="individual-card">
+                        <div class="individual-avatar" style="background-color: #F59E0B;">AN</div>
+                        <div class="individual-info">
+                            <div class="individual-name">Ayu Ningrum</div>
+                            <div class="individual-location">Kota Yogyakarta, DI Yogyakarta</div>
+                        </div>
+                        <div class="individual-stats">
+                            <div class="individual-stat">
+                                <div class="individual-value">27</div>
+                                <div class="individual-label">Aspirasi</div>
+                            </div>
+                            <div class="individual-stat">
+                                <div class="individual-value">91%</div>
+                                <div class="individual-label">Etika</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="individual-card">
+                        <div class="individual-avatar" style="background-color: #EF4444;">HS</div>
+                        <div class="individual-info">
+                            <div class="individual-name">Hendra Saputra</div>
+                            <div class="individual-location">Kota Tangerang, Banten</div>
+                        </div>
+                        <div class="individual-stats">
+                            <div class="individual-stat">
+                                <div class="individual-value">25</div>
+                                <div class="individual-label">Aspirasi</div>
+                            </div>
+                            <div class="individual-stat">
+                                <div class="individual-value">82%</div>
+                                <div class="individual-label">Etika</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="individual-card">
+                        <div class="individual-avatar" style="background-color: #8B5CF6;">MA</div>
+                        <div class="individual-info">
+                            <div class="individual-name">Maya Anggraini</div>
+                            <div class="individual-location">Kota Bekasi, Jawa Barat</div>
+                        </div>
+                        <div class="individual-stats">
+                            <div class="individual-stat">
+                                <div class="individual-value">23</div>
+                                <div class="individual-label">Aspirasi</div>
+                            </div>
+                            <div class="individual-stat">
+                                <div class="individual-value">87%</div>
+                                <div class="individual-label">Etika</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="individual-card">
+                        <div class="individual-avatar" style="background-color: #06B6D4;">FP</div>
+                        <div class="individual-info">
+                            <div class="individual-name">Fajar Pratama</div>
+                            <div class="individual-location">Kota Surakarta, Jawa Tengah</div>
+                        </div>
+                        <div class="individual-stats">
+                            <div class="individual-stat">
+                                <div class="individual-value">21</div>
+                                <div class="individual-label">Aspirasi</div>
+                            </div>
+                            <div class="individual-stat">
+                                <div class="individual-value">89%</div>
+                                <div class="individual-label">Etika</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ethics Leaderboard -->
+        <div class="leaderboard-content" id="ethics-leaderboard">
+            <h2 class="section-title">Peringkat Etika Tertinggi</h2>
+            <p class="text-muted mb-4">Berdasarkan skor etika rata-rata dari aspirasi</p>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="leaderboard-card">
+                        <div class="leaderboard-header">
+                            <div class="rank-badge rank-1" style="background: linear-gradient(135deg, #10B981, #059669);">1</div>
+                            <div>
+                                <div class="leaderboard-title">DI Yogyakarta</div>
+                                <div class="leaderboard-subtitle">Skor Etika: 93%</div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">962</div>
+                                <div class="stat-label">Total Aspirasi</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">5</div>
+                                <div class="stat-label">Kota/Kabupaten</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">98%</div>
+                                <div class="stat-label">Aspirasi Layak</div>
+                            </div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 93%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="leaderboard-card">
+                        <div class="leaderboard-header">
+                            <div class="rank-badge rank-2" style="background: linear-gradient(135deg, #10B981, #059669);">2</div>
+                            <div>
+                                <div class="leaderboard-title">DKI Jakarta</div>
+                                <div class="leaderboard-subtitle">Skor Etika: 91%</div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">1,987</div>
+                                <div class="stat-label">Total Aspirasi</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">5</div>
+                                <div class="stat-label">Kota/Kabupaten</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">96%</div>
+                                <div class="stat-label">Aspirasi Layak</div>
+                            </div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 91%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="leaderboard-card">
+                        <div class="leaderboard-header">
+                            <div class="rank-badge rank-3" style="background: linear-gradient(135deg, #10B981, #059669);">3</div>
+                            <div>
+                                <div class="leaderboard-title">Jawa Tengah</div>
+                                <div class="leaderboard-subtitle">Skor Etika: 89%</div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">2,543</div>
+                                <div class="stat-label">Total Aspirasi</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">15</div>
+                                <div class="stat-label">Kota/Kabupaten</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">94%</div>
+                                <div class="stat-label">Aspirasi Layak</div>
+                            </div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 89%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="province-card">
+                        <div class="province-header">
+                            <div class="province-icon" style="background-color: #10B981;">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <div>
+                                <div class="province-title">Kategori Etika</div>
+                                <div class="province-subtitle">Berdasarkan Skor Rata-rata</div>
+                            </div>
+                        </div>
+                        <div class="city-list">
+                            <div class="city-item">
+                                <div class="city-name">Sangat Baik (90-100%)</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value">2</div>
+                                        <div class="city-label">Provinsi</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Baik (80-89%)</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value">3</div>
+                                        <div class="city-label">Provinsi</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Cukup (70-79%)</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value">1</div>
+                                        <div class="city-label">Provinsi</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Perlu Perbaikan (<70%)</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value">0</div>
+                                        <div class="city-label">Provinsi</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="province-card mt-3">
+                        <div class="province-header">
+                            <div class="province-icon" style="background-color: #F59E0B;">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div>
+                                <div class="province-title">Rekomendasi</div>
+                                <div class="province-subtitle">Untuk Peningkatan Kualitas</div>
+                            </div>
+                        </div>
+                        <div class="city-list">
+                            <div class="city-item">
+                                <div class="city-name">Banten</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value text-warning">+6%</div>
+                                        <div class="city-label">Potensi</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Jawa Barat</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value text-warning">+5%</div>
+                                        <div class="city-label">Potensi</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Jawa Timur</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value text-warning">+3%</div>
+                                        <div class="city-label">Potensi</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Leaderboard -->
+        <div class="leaderboard-content" id="category-leaderboard">
+            <h2 class="section-title">Peringkat Berdasarkan Bidang</h2>
+            <p class="text-muted mb-4">Distribusi aspirasi menurut kategori di seluruh Jawa</p>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Bidang</th>
+                                    <th>Jumlah Aspirasi</th>
+                                    <th>Persentase</th>
+                                    <th>Provinsi Teraktif</th>
+                                    <th>Skor Etika</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-graduation-cap me-2 text-primary"></i> Pendidikan
+                                    </td>
+                                    <td>3,245</td>
+                                    <td>
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar bg-primary" style="width: 26%"></div>
+                                        </div>
+                                    </td>
+                                    <td>Jawa Barat</td>
+                                    <td>
+                                        <span class="badge badge-success">87%</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-heartbeat me-2 text-danger"></i> Kesehatan
+                                    </td>
+                                    <td>2,876</td>
+                                    <td>
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar bg-danger" style="width: 23%"></div>
+                                        </div>
+                                    </td>
+                                    <td>Jawa Timur</td>
+                                    <td>
+                                        <span class="badge badge-success">89%</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-bus me-2 text-warning"></i> Transportasi
+                                    </td>
+                                    <td>2,543</td>
+                                    <td>
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar bg-warning" style="width: 20%"></div>
+                                        </div>
+                                    </td>
+                                    <td>Jawa Tengah</td>
+                                    <td>
+                                        <span class="badge badge-success">85%</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-hard-hat me-2 text-info"></i> Infrastruktur
+                                    </td>
+                                    <td>1,654</td>
+                                    <td>
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar bg-info" style="width: 13%"></div>
+                                        </div>
+                                    </td>
+                                    <td>DKI Jakarta</td>
+                                    <td>
+                                        <span class="badge badge-success">91%</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-leaf me-2 text-success"></i> Lingkungan
+                                    </td>
+                                    <td>987</td>
+                                    <td>
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar bg-success" style="width: 8%"></div>
+                                        </div>
+                                    </td>
+                                    <td>Jawa Timur</td>
+                                    <td>
+                                        <span class="badge badge-success">88%</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-hands-helping me-2 text-secondary"></i> Sosial
+                                    </td>
+                                    <td>754</td>
+                                    <td>
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar bg-secondary" style="width: 6%"></div>
+                                        </div>
+                                    </td>
+                                    <td>Jawa Barat</td>
+                                    <td>
+                                        <span class="badge badge-success">84%</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-building me-2 text-dark"></i> Fasilitas Umum
+                                    </td>
+                                    <td>654</td>
+                                    <td>
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar bg-dark" style="width: 5%"></div>
+                                        </div>
+                                    </td>
+                                    <td>Jawa Barat</td>
+                                    <td>
+                                        <span class="badge badge-warning">79%</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="province-card">
+                        <div class="province-header">
+                            <div class="province-icon" style="background-color: #8B5CF6;">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <div>
+                                <div class="province-title">Distribusi Bidang</div>
+                                <div class="province-subtitle">Seluruh Wilayah Jawa</div>
+                            </div>
+                        </div>
+                        <div class="city-list">
+                            <div class="city-item">
+                                <div class="city-name">Pendidikan</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value">26%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Kesehatan</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value">23%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Transportasi</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value">20%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Infrastruktur</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value">13%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Lingkungan</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value">8%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Lainnya</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value">10%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="province-card mt-3">
+                        <div class="province-header">
+                            <div class="province-icon" style="background-color: #F59E0B;">
+                                <i class="fas fa-trending-up"></i>
+                            </div>
+                            <div>
+                                <div class="province-title">Bidang Tumbuh Cepat</div>
+                                <div class="province-subtitle">Bulan Terakhir</div>
+                            </div>
+                        </div>
+                        <div class="city-list">
+                            <div class="city-item">
+                                <div class="city-name">Lingkungan</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value text-success">+18%</div>
+                                        <div class="city-label">Pertumbuhan</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Kesehatan</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value text-success">+12%</div>
+                                        <div class="city-label">Pertumbuhan</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="city-item">
+                                <div class="city-name">Sosial</div>
+                                <div class="city-stats">
+                                    <div class="city-stat">
+                                        <div class="city-value text-success">+10%</div>
+                                        <div class="city-label">Pertumbuhan</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4 class="mb-3"><i class="fas fa-brain me-2"></i>CivicAI</h4>
+                    <p>Platform aspirasi publik berbasis kecerdasan buatan untuk membangun demokrasi digital yang etis, transparan, dan inklusif di Indonesia.</p>
+                    <div class="mt-4">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <div class="footer-links">
+                        <h5>Navigasi</h5>
+                        <ul>
+                            <li><a href="index.html#home">Beranda</a></li>
+                            <li><a href="index.html#features">Fitur</a></li>
+                            <li><a href="index.html#dashboard">Dashboard</a></li>
+                            <li><a href="aspirasi.html">Aspirasi</a></li>
+                            <li><a href="leaderboard.html">Leaderboard</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="footer-links">
+                        <h5>Kebijakan</h5>
+                        <ul>
+                            <li><a href="#">Kebijakan Privasi</a></li>
+                            <li><a href="#">Syarat dan Ketentuan</a></li>
+                            <li><a href="#">Etika Penggunaan</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <div class="footer-links">
+                        <h5>Kontak</h5>
+                        <ul>
+                            <li><i class="fas fa-map-marker-alt me-2"></i> Surabaya, Indonesia</li>
+                            <li><i class="fas fa-envelope me-2"></i> info@civicai.id</li>
+                            <li><i class="fas fa-phone me-2"></i> +62 21 1234 5678</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Anarus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                document.querySelectorAll('.leaderboard-tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Hide all content
+                document.querySelectorAll('.leaderboard-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Show target content
+                const target = this.getAttribute('data-target');
+                document.getElementById(target).classList.add('active');
+            });
+        });
+
+        // Sample data for demonstration
+        const provinceData = [
+            { name: "Jawa Barat", aspirasi: 3245, etika: 84, kota: 18, bidang: "Pendidikan" },
+            { name: "Jawa Timur", aspirasi: 2876, etika: 87, kota: 16, bidang: "Kesehatan" },
+            { name: "Jawa Tengah", aspirasi: 2543, etika: 89, kota: 15, bidang: "Transportasi" },
+            { name: "DKI Jakarta", aspirasi: 1987, etika: 91, kota: 5, bidang: "Infrastruktur" },
+            { name: "Banten", aspirasi: 1245, etika: 85, kota: 8, bidang: "Transportasi" },
+            { name: "DI Yogyakarta", aspirasi: 962, etika: 93, kota: 5, bidang: "Pendidikan" }
+        ];
+
+        // Individual data
+        const individualData = [
+            { name: "Ahmad Fauzi", location: "Kota Bandung, Jawa Barat", aspirasi: 42, etika: 89, bidang: "Pendidikan" },
+            { name: "Siti Rahayu", location: "Kota Surabaya, Jawa Timur", aspirasi: 38, etika: 92, bidang: "Kesehatan" },
+            { name: "Budi Santoso", location: "Kota Semarang, Jawa Tengah", aspirasi: 35, etika: 85, bidang: "Transportasi" },
+            { name: "Dewi Wulandari", location: "Kota Malang, Jawa Timur", aspirasi: 32, etika: 88, bidang: "Lingkungan" },
+            { name: "Rizki Setiawan", location: "Kota Bogor, Jawa Barat", aspirasi: 29, etika: 84, bidang: "Sosial" },
+            { name: "Ayu Ningrum", location: "Kota Yogyakarta, DI Yogyakarta", aspirasi: 27, etika: 91, bidang: "Pendidikan" },
+            { name: "Hendra Saputra", location: "Kota Tangerang, Banten", aspirasi: 25, etika: 82, bidang: "Transportasi" },
+            { name: "Maya Anggraini", location: "Kota Bekasi, Jawa Barat", aspirasi: 23, etika: 87, bidang: "Fasilitas Umum" },
+            { name: "Fajar Pratama", location: "Kota Surakarta, Jawa Tengah", aspirasi: 21, etika: 89, bidang: "Kesehatan" }
+        ];
+
+        // You could use this data to dynamically populate the leaderboard
+        // For now, we're using static content for demonstration
+        
+        // Function to update leaderboard with real data (if available)
+        function updateLeaderboard() {
+            // In a real application, you would fetch data from an API or localStorage
+            // and update the DOM elements accordingly
+            console.log("Leaderboard data would be updated here");
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateLeaderboard();
+        });
+    </script>
+</body>
+</html>
