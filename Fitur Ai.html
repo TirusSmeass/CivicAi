@@ -177,6 +177,12 @@
             border-left: 4px solid var(--success);
         }
         
+        .alert-danger {
+            background-color: #FEF2F2;
+            color: var(--danger);
+            border-left: 4px solid var(--danger);
+        }
+        
         .alert-icon {
             margin-right: 0.75rem;
             font-size: 1.25rem;
@@ -269,6 +275,11 @@
             border-left: 4px solid var(--primary);
         }
         
+        .aspiration-card.rejected {
+            border-left: 4px solid var(--danger);
+            background-color: #FEF2F2;
+        }
+        
         .aspiration-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
@@ -310,6 +321,15 @@
         .aspiration-anonymous {
             background-color: #F0F9FF;
             color: var(--primary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .aspiration-rejected {
+            background-color: #FEE2E2;
+            color: var(--danger);
             padding: 0.2rem 0.6rem;
             border-radius: 4px;
             font-size: 0.75rem;
@@ -532,11 +552,6 @@
         .name-input-container.show {
             display: block;
             animation: fadeIn 0.3s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         
         .ai-analysis-section {
@@ -792,6 +807,33 @@
             color: var(--secondary);
         }
         
+        .detected-words {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .detected-words-list {
+            background-color: #FEF2F2;
+            border-radius: 4px;
+            padding: 0.5rem;
+            margin-top: 0.25rem;
+        }
+        
+        .detected-word {
+            display: inline-block;
+            background-color: #FEE2E2;
+            color: var(--danger);
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            margin: 0.1rem;
+            font-size: 0.75rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
         @media (max-width: 768px) {
             .feature-header {
                 padding: 2rem 0;
@@ -973,6 +1015,10 @@
                         <span class="analysis-detail-value" id="inappropriateWords">-</span>
                     </div>
                     <div class="analysis-detail-item">
+                        <span class="analysis-detail-label">Kata SARA Terdeteksi:</span>
+                        <span class="analysis-detail-value" id="saraWords">-</span>
+                    </div>
+                    <div class="analysis-detail-item">
                         <span class="analysis-detail-label">Tingkat Konstruktif:</span>
                         <span class="analysis-detail-value" id="constructiveLevel">-</span>
                     </div>
@@ -992,6 +1038,19 @@
             <div class="alert-content">
                 <strong>Peringatan Etika</strong>
                 <p class="mb-0">Konten yang Anda tuliskan mengandung kata-kata yang tidak sesuai dengan etika publik. Mohon periksa kembali aspirasi Anda sebelum mengirim.</p>
+                <div class="detected-words" id="inappropriateWordsList"></div>
+            </div>
+        </div>
+
+        <!-- SARA Alert (Initially Hidden) -->
+        <div class="alert alert-danger mb-4" id="saraAlert" style="display: none;">
+            <div class="alert-icon">
+                <i class="fas fa-ban"></i>
+            </div>
+            <div class="alert-content">
+                <strong>Aspirasi Ditolak - Konten Negatif/SARA</strong>
+                <p class="mb-0">Konten yang Anda tuliskan mengandung unsur negatif, ujaran kebencian, atau SARA yang tidak sesuai dengan nilai-nilai kebangsaan. Aspirasi Anda tidak dapat diproses.</p>
+                <div class="detected-words" id="saraWordsList"></div>
             </div>
         </div>
 
@@ -1006,6 +1065,75 @@
             </div>
         </div>
 
+       
+                <!-- Real-time AI Analysis for Aspiration Form -->
+                <div class="aspiration-analysis" id="aspirationAnalysis" style="display: none;">
+                    <div class="aspiration-analysis-header">
+                        <div class="aspiration-analysis-title">
+                            <i class="fas fa-robot me-2"></i>Analisis Real-time AI
+                        </div>
+                        <div class="aspiration-analysis-badge sentiment-badge-neutral" id="aspirationSentimentBadge">
+                            Netral
+                        </div>
+                        <div class="aspiration-analysis-badge ethics-badge-medium" id="aspirationEthicsBadge">
+                            Etika: 0%
+                        </div>
+                    </div>
+                    <div class="aspiration-analysis-content" id="aspirationAnalysisContent">
+                        Mulai mengetik untuk melihat analisis AI real-time...
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Kirim Aspirasi
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Search and Filter Section -->
+            <div class="search-section" id="searchSection" style="display: none;">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="form-control search-input" id="searchInput" placeholder="Cari aspirasi...">
+                </div>
+                <div class="filter-section">
+                    <select class="form-select filter-select" id="filterProvince">
+                        <option value="">Semua Provinsi</option>
+                    </select>
+                    <select class="form-select filter-select" id="filterCity">
+                        <option value="">Semua Kota</option>
+                    </select>
+                    <select class="form-select filter-select" id="filterCategory">
+                        <option value="">Semua Bidang</option>
+                    </select>
+                    <button class="btn btn-outline-primary" id="resetFilters">Reset Filter</button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <div class="results-header">
+                    <h2 class="results-title">Hasil Aspirasi Publik</h2>
+                    <div class="d-flex align-items-center">
+                        <span class="results-count me-3" id="resultsCount">0 aspirasi ditemukan</span>
+                        <select class="form-select sort-select" id="sortSelect">
+                            <option value="newest">Terbaru</option>
+                            <option value="oldest">Terlama</option>
+                            <option value="az">A-Z</option>
+                            <option value="za">Z-A</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="aspirationResults">
+                    <!-- Results will be populated here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
@@ -1082,11 +1210,26 @@
             "Bali": ["Denpasar", "Badung", "Gianyar", "Tabanan", "Singaraja"]
         };
 
-        // Inappropriate words list
+        // DAFTAR KATA KUNCI YANG DITOLAK (SARA & Negatif)
         const inappropriateWords = [
             "bangsat", "anjing", "goblok", "tolol", "bodoh", "idiot", 
             "kontol", "memek", "jancok", "asu", "bajingan", "kampret",
-            "jancuk", "jembut", "pentil", "kirik", "kirek", "bego"
+            "jancuk", "jembut", "pentil", "kirik", "kirek", "bego",
+            "goblog", "tolol", "bejat", "brengsek", "keparat", "bajul",
+            "bangsater", "anjir", "asu", "tai", "taek", "tahi", "kotoran",
+            "sampah", "murahan", "hina", "rendahan", "kampungan"
+        ];
+
+        const saraWords = [
+            "cina", "cino", "cokin", "tionghoa", "taiwan", "taiwanese",
+            "jawa", "jowo", "sunda", "sundanese", "batak", "bataknese",
+            "papua", "papuan", "ambon", "ambonese", "minang", "minangese",
+            "madura", "madurese", "dayak", "dayakese", "bugis", "buginese",
+            "melayu", "malay", "islam", "muslim", "kristen", "christian",
+            "hindu", "buddha", "buddhist", "katolik", "catholic", "protestan",
+            "yahudi", "jewish", "atheis", "atheist", "kafir", "infidel",
+            "kristenisasi", "islamisasi", "komunis", "komunisme", "komunisasi",
+            "pki", "partai terlarang", "ekstremis", "radikal", "fundamentalis"
         ];
 
         // Positive sentiment words
@@ -1094,7 +1237,9 @@
             "bagus", "baik", "mantap", "hebat", "setuju", "dukung", "suka", "senang", 
             "terima kasih", "solusi", "rekomendasi", "usul", "maju", "sukses", "bangga",
             "positif", "konstruktif", "bermanfaat", "membantu", "memuaskan", "puas",
-            "kreatif", "inovatif", "inspiratif", "menjanjikan", "optimis", "cerah"
+            "kreatif", "inovatif", "inspiratif", "menjanjikan", "optimis", "cerah",
+            "perbaikan", "peningkatan", "pengembangan", "kemajuan", "inovasi", "reformasi",
+            "dukungan", "apresiasi", "penghargaan", "saran", "gagasan", "ide", "proposal"
         ];
 
         // Negative sentiment words
@@ -1102,24 +1247,26 @@
             "buruk", "jelek", "gagal", "tolak", "tidak", "jangan", "protes", "kecewa",
             "menyesal", "masalah", "keluhan", "rusak", "parah", "sulit", "bermasalah",
             "negatif", "merugikan", "menyusahkan", "frustasi", "menyedihkan", "mengecewakan",
-            "mengerikan", "menyebalkan", "menjengkelkan", "tidak puas", "kecewa", "menyesalkan"
+            "mengerikan", "menyebalkan", "menjengkelkan", "tidak puas", "kecewa", "menyesalkan",
+            "keluhan", "protes", "penolakan", "kritik", "kecaman", "ketidaksetujuan"
         ];
-
-        // Bias-related words (SARA - Suku, Agama, Ras, Antar-golongan)
-        const biasWords = {
-            "suku": ["suku", "etnis", "daerah asal", "budaya", "adat"],
-            "agama": ["agama", "keyakinan", "iman", "ibadah", "ritual"],
-            "ras": ["ras", "kulit", "fisik", "keturunan"],
-            "gender": ["gender", "laki-laki", "perempuan", "pria", "wanita"],
-            "politik": ["partai", "politik", "pemerintah", "oposisi", "kubu"]
-        };
 
         // Constructive words
         const constructiveWords = [
             "usul", "usulan", "mengusulkan", "mengajukan", "solusi", "rekomendasi", 
             "saran", "ide", "gagasan", "proposal", "rencana", "strategi", "langkah",
-            "perbaikan", "peningkatan", "pengembangan", "inovasi", "reformasi", "transformasi"
+            "perbaikan", "peningkatan", "pengembangan", "inovasi", "reformasi", "transformasi",
+            "saran", "masukan", "pendapat", "anjuran", "rekomendasi", "solusi", "jalan keluar"
         ];
+
+        // Bias-related words (SARA - Suku, Agama, Ras, Antar-golongan)
+        const biasWords = {
+            "suku": ["suku", "etnis", "daerah asal", "budaya", "adat", "suku jawa", "suku sunda", "suku batak", "suku papua"],
+            "agama": ["agama", "keyakinan", "iman", "ibadah", "ritual", "islam", "kristen", "hindu", "buddha", "katolik"],
+            "ras": ["ras", "kulit", "fisik", "keturunan", "kulit hitam", "kulit putih", "ras tertentu"],
+            "gender": ["gender", "laki-laki", "perempuan", "pria", "wanita", "maskulin", "feminin"],
+            "politik": ["partai", "politik", "pemerintah", "oposisi", "kubu", "golongan", "kelompok"]
+        };
 
         // Category icons mapping
         const categoryIcons = {
@@ -1254,19 +1401,68 @@
         // Function to check for inappropriate words
         function checkInappropriateWords(text) {
             const ethicsAlert = document.getElementById('ethicsAlert');
-            let hasInappropriateWord = false;
+            const saraAlert = document.getElementById('saraAlert');
+            const inappropriateWordsList = document.getElementById('inappropriateWordsList');
+            const saraWordsList = document.getElementById('saraWordsList');
             
+            let detectedInappropriate = [];
+            let detectedSara = [];
+            
+            // Check for inappropriate words
             inappropriateWords.forEach(word => {
                 if (text.toLowerCase().includes(word)) {
-                    hasInappropriateWord = true;
+                    detectedInappropriate.push(word);
                 }
             });
             
-            if (hasInappropriateWord) {
+            // Check for SARA words
+            saraWords.forEach(word => {
+                if (text.toLowerCase().includes(word)) {
+                    detectedSara.push(word);
+                }
+            });
+            
+            // Update alert messages with detected words
+            if (detectedInappropriate.length > 0) {
+                inappropriateWordsList.innerHTML = `
+                    <strong>Kata terdeteksi:</strong>
+                    <div class="detected-words-list">
+                        ${detectedInappropriate.map(word => `<span class="detected-word">${word}</span>`).join('')}
+                    </div>
+                `;
+            } else {
+                inappropriateWordsList.innerHTML = '';
+            }
+            
+            if (detectedSara.length > 0) {
+                saraWordsList.innerHTML = `
+                    <strong>Kata SARA terdeteksi:</strong>
+                    <div class="detected-words-list">
+                        ${detectedSara.map(word => `<span class="detected-word">${word}</span>`).join('')}
+                    </div>
+                `;
+            } else {
+                saraWordsList.innerHTML = '';
+            }
+            
+            // Show appropriate alerts
+            if (detectedSara.length > 0) {
+                saraAlert.style.display = 'flex';
+                ethicsAlert.style.display = 'none';
+            } else if (detectedInappropriate.length > 0) {
                 ethicsAlert.style.display = 'flex';
+                saraAlert.style.display = 'none';
             } else {
                 ethicsAlert.style.display = 'none';
+                saraAlert.style.display = 'none';
             }
+            
+            return { 
+                hasInappropriateWord: detectedInappropriate.length > 0, 
+                hasSaraWord: detectedSara.length > 0,
+                detectedInappropriate,
+                detectedSara
+            };
         }
 
         // Identity selection
@@ -1346,11 +1542,15 @@
             words.forEach(word => {
                 if (positiveWords.includes(word)) {
                     positiveCount++;
-                    positiveWordsFound.push(word);
+                    if (!positiveWordsFound.includes(word)) {
+                        positiveWordsFound.push(word);
+                    }
                 }
                 if (negativeWords.includes(word)) {
                     negativeCount++;
-                    negativeWordsFound.push(word);
+                    if (!negativeWordsFound.includes(word)) {
+                        negativeWordsFound.push(word);
+                    }
                 }
             });
             
@@ -1399,12 +1599,21 @@
             let ethicsScore = 100;
             const words = text.toLowerCase();
             let inappropriateWordsFound = [];
+            let saraWordsFound = [];
             
             // Check for inappropriate words
             inappropriateWords.forEach(word => {
                 if (words.includes(word)) {
-                    ethicsScore -= 10;
+                    ethicsScore -= 15;
                     inappropriateWordsFound.push(word);
+                }
+            });
+            
+            // Check for SARA words
+            saraWords.forEach(word => {
+                if (words.includes(word)) {
+                    ethicsScore -= 20;
+                    saraWordsFound.push(word);
                 }
             });
             
@@ -1418,7 +1627,7 @@
             
             // Adjust score based on constructive language
             if (constructiveCount > 0) {
-                ethicsScore += Math.min(constructiveCount * 2, 10);
+                ethicsScore += Math.min(constructiveCount * 3, 15);
             }
             
             // Check text length
@@ -1442,7 +1651,8 @@
             return {
                 score: Math.round(ethicsScore),
                 description: ethicsDescription,
-                inappropriateWords: inappropriateWordsFound
+                inappropriateWords: inappropriateWordsFound,
+                saraWords: saraWordsFound
             };
         }
 
@@ -1459,7 +1669,9 @@
                         if (!biasCategories.includes(category)) {
                             biasCategories.push(category);
                         }
-                        biasWordsFound.push(word);
+                        if (!biasWordsFound.includes(word)) {
+                            biasWordsFound.push(word);
+                        }
                     }
                 });
             });
@@ -1501,6 +1713,10 @@
                 recommendations.push(`Hapus kata-kata tidak pantas: ${ethics.inappropriateWords.join(', ')}`);
             }
             
+            if (ethics.saraWords.length > 0) {
+                recommendations.push(`Hapus kata-kata SARA: ${ethics.saraWords.join(', ')}`);
+            }
+            
             // Bias-based recommendations
             if (bias.level === "Tinggi") {
                 recommendations.push("Kurangi referensi pada suku, agama, ras, atau golongan tertentu untuk menghindari bias.");
@@ -1524,6 +1740,7 @@
             let positiveKeywords = [];
             let negativeKeywords = [];
             let inappropriateWordsFound = [];
+            let saraWordsFound = [];
             let constructiveCount = 0;
             
             // Analyze words
@@ -1536,6 +1753,9 @@
                 }
                 if (inappropriateWords.includes(word) && !inappropriateWordsFound.includes(word)) {
                     inappropriateWordsFound.push(word);
+                }
+                if (saraWords.includes(word) && !saraWordsFound.includes(word)) {
+                    saraWordsFound.push(word);
                 }
                 if (constructiveWords.includes(word)) {
                     constructiveCount++;
@@ -1554,6 +1774,7 @@
                 positiveKeywords: positiveKeywords.length > 0 ? positiveKeywords.join(', ') : "Tidak ada",
                 negativeKeywords: negativeKeywords.length > 0 ? negativeKeywords.join(', ') : "Tidak ada",
                 inappropriateWords: inappropriateWordsFound.length > 0 ? inappropriateWordsFound.join(', ') : "Tidak ada",
+                saraWords: saraWordsFound.length > 0 ? saraWordsFound.join(', ') : "Tidak ada",
                 constructiveLevel: constructiveLevel
             };
         }
@@ -1656,6 +1877,7 @@
                 document.getElementById('positiveKeywords').textContent = result.details.positiveKeywords;
                 document.getElementById('negativeKeywords').textContent = result.details.negativeKeywords;
                 document.getElementById('inappropriateWords').textContent = result.details.inappropriateWords;
+                document.getElementById('saraWords').textContent = result.details.saraWords;
                 document.getElementById('constructiveLevel').textContent = result.details.constructiveLevel;
             });
         });
@@ -1666,9 +1888,6 @@
             document.getElementById('aiAnalysisResults').style.display = 'none';
         });
 
-        // The rest of the code (form submission, display functions, etc.) would be similar to previous implementations
-        // For brevity, I'm omitting those parts as they are extensive and similar to what we've done before
-        
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
             // Any initialization code would go here
